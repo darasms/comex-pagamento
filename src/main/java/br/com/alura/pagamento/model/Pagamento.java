@@ -1,4 +1,4 @@
-package br.com.alura.pagamento;
+package br.com.alura.pagamento.model;
 
 import java.math.BigDecimal;
 
@@ -13,7 +13,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Entity
-class Pagamento {
+public class Pagamento {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

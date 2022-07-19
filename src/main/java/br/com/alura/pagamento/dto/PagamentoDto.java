@@ -1,8 +1,10 @@
-package br.com.alura.pagamento;
+package br.com.alura.pagamento.dto;
+
+import br.com.alura.pagamento.model.Pagamento;
 
 import java.math.BigDecimal;
 
-class PagamentoDto {
+public class PagamentoDto {
 
 	private Long id;
 	private BigDecimal valor;
@@ -12,7 +14,7 @@ class PagamentoDto {
 	PagamentoDto() {
 	}
 	
-	PagamentoDto(Pagamento p) {
+	public PagamentoDto(Pagamento p) {
 		this(p.getId(), p.getValor(), p.getCpfCliente(), p.getPedidoId());
 	}
 
