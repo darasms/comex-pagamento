@@ -5,12 +5,14 @@ import br.com.alura.pagamento.enuns.StatusPagamento;
 import br.com.alura.pagamento.http.PedidoClient;
 import br.com.alura.pagamento.model.Pagamento;
 import br.com.alura.pagamento.repository.PagamentoRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.lang.reflect.Executable;
 import java.net.URI;
 
 @RestController
@@ -42,6 +44,7 @@ class PagamentoController {
 
 
 	@PatchMapping("/confirmar/{id}")
+	@CircuitBreaker(name = "atualizaPedido", fallbackMethod = "pagamentoConfirmadoComIntegracaoPendente")
 	public void confirmarPagamento(@PathVariable Long id){
 
 		Pagamento pagamento = pagamentoRepository.findById(id)
@@ -49,8 +52,18 @@ class PagamentoController {
 
 		pagamento.setStatusPagamento(StatusPagamento.CONFIRMADO);
 		pagamentoRepository.save(pagamento);
-		Long id_pedido = pagamento.getPedidoId();
-		pedidoCliente.atualizarPagamento(id_pedido);
+		pedidoCliente.atualizarPagamento(pagamento.getPedidoId());
+	}
+
+	public void pagamentoConfirmadoComIntegracaoPendente(Long id, Exception e){
+
+		Pagamento pagamento = pagamentoRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+		pagamento.setStatusPagamento(StatusPagamento.CONFIRMADO_SEM_INTEGRACAO);
+		pagamentoRepository.save(pagamento);
+		pedidoCliente.atualizarPagamento(pagamento.getPedidoId());
+
 	}
 
 }

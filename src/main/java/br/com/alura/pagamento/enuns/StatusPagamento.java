@@ -1,5 +1,5 @@
 package br.com.alura.pagamento.enuns;
 
 public enum StatusPagamento {
-    CONFIRMADO, EM_ANDAMENTO
+    CONFIRMADO, EM_ANDAMENTO, CONFIRMADO_SEM_INTEGRACAO
 }
