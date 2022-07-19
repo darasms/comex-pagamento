@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("ms-comex")
 public interface PedidoClient {
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/api/pedidos/status/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/api/pedidos/status_confirmado/{id}")
     void atualizarPagamento(@PathVariable Long id);
 }

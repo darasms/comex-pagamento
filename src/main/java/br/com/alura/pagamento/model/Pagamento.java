@@ -1,12 +1,10 @@
 package br.com.alura.pagamento.model;
 
+import br.com.alura.pagamento.enuns.StatusPagamento;
+
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -27,6 +25,9 @@ public class Pagamento {
 
 	@Column(nullable=false)
 	private Long pedidoId;
+
+	@Enumerated(EnumType.STRING)
+	private StatusPagamento statusPagamento = StatusPagamento.EM_ANDAMENTO;
 
 	public Pagamento() {
 	}
@@ -69,6 +70,14 @@ public class Pagamento {
 
 	public void setPedidoId(Long pedidoId) {
 		this.pedidoId = pedidoId;
+	}
+
+	public StatusPagamento getStatusPagamento() {
+		return statusPagamento;
+	}
+
+	public void setStatusPagamento(StatusPagamento statusPagamento) {
+		this.statusPagamento = statusPagamento;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package br.com.alura.pagamento.controller;
 
 import br.com.alura.pagamento.dto.PagamentoDto;
+import br.com.alura.pagamento.enuns.StatusPagamento;
 import br.com.alura.pagamento.http.PedidoClient;
 import br.com.alura.pagamento.model.Pagamento;
 import br.com.alura.pagamento.repository.PagamentoRepository;
@@ -18,11 +19,11 @@ class PagamentoController {
 
 	private final PagamentoRepository pagamentoRepository;
 
-	private final PedidoClient pedidoClient;
+	private final PedidoClient pedidoCliente;
 
 	public PagamentoController(PagamentoRepository pagamentoRepository, PedidoClient pedidoClient) {
 		this.pagamentoRepository = pagamentoRepository;
-		this.pedidoClient = pedidoClient;
+		this.pedidoCliente = pedidoClient;
 	}
 
 	@GetMapping("/{id}")
@@ -41,10 +42,15 @@ class PagamentoController {
 
 
 	@PatchMapping("/confirmar/{id}")
-	ResponseEntity<Void> confirmarPagamento(@PathVariable Long id){
-		pedidoClient.atualizarPagamento(id);
-		System.out.println(">>>>>>   PASSEI AQUI");
-		return ResponseEntity.ok().build();
+	public void confirmarPagamento(@PathVariable Long id){
+
+		Pagamento pagamento = pagamentoRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+		pagamento.setStatusPagamento(StatusPagamento.CONFIRMADO);
+		pagamentoRepository.save(pagamento);
+		Long id_pedido = pagamento.getPedidoId();
+		pedidoCliente.atualizarPagamento(id_pedido);
 	}
 
 }
